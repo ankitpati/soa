@@ -1,7 +1,5 @@
 package Factorial;
 
-use SOAP::Lite;
-
 sub getFactorial {
     my $self = shift;
     my $n = shift;

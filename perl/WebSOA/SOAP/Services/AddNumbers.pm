@@ -1,7 +1,5 @@
 package AddNumbers;
 
-use SOAP::Lite;
-
 sub getSum {
     my $self = shift;
 
