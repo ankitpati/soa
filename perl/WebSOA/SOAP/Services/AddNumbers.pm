@@ -8,7 +8,7 @@ sub getSum {
     my $sum = 0;
     $sum += $_ foreach @_;
 
-    return SOAP::Data->name (Result => $sum)->type ('int');
+    return $sum;
 }
 
 1;
