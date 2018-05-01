@@ -12,3 +12,12 @@ print "Addition\n", $client->getSum (43, 5, 50, 55)->result, "\n\n";
 
 $client->uri ('urn:Factorial');
 print "Factorial\n", $client->getFactorial (5)->result, "\n\n";
+
+$client->uri ('urn:Factors');
+print "Factors\n";
+my $factors = $client->getFactors (50);
+my $f = $factors->name ('factors');
+use Data::Dumper; print Dumper $f;
+__END__
+print "$_ " foreach @factors;
+print "\n\n";
