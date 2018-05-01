@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<users>
+    <user type="admin">
+        <name>Ankit Pati</name>
+        <email>contact@ankitpati.in</email>
+        <email>ankit.pati@sitpune.edu.in</email>
+        <address>
+            A-435 Some Building
+            Some Street
+            Some City--101011
+        </address>
+    </user>
+    <user>
+        <name>Tiashaa Chatterjee</name>
+        <email>tc@gmail.com</email>
+        <address>
+            B-543 Some Other Building
+            Some Other Street
+            Some Other City--000101
+        </address>
+    </user>
+</users>
