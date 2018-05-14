@@ -15,7 +15,7 @@ sub main {
     die "Malformed XML file!\n" if $@;
 
     foreach my $movie ($dom->findnodes ('//movie')) {
-        my $cast = join ', ', map { $_->{name} }
+        my $cast = join ', ', map { "$_->{name} as $_->{role}" }
                                 $movie->findnodes ('./cast/person');
         $cast =~ s/, $//;
 
