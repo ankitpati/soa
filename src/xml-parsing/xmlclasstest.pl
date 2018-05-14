@@ -52,10 +52,8 @@ EOM
 
     my $dom = shift;
 
-    foreach my $food ($dom->findnodes ('//food')) {
-        print $food->findvalue ('name'), "\n\t",
-              $food->findvalue ('price'), "\n";
-    }
+    print $_->findvalue ('name'), "\n\t", $_->findvalue ('price'), "\n"
+        foreach $dom->findnodes ('//food');
 }
 
 sub answer4 {
