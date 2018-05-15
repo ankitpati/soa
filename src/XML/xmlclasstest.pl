@@ -93,10 +93,8 @@ EOM
 
     my @foods = $dom->findnodes ('//food');
 
-    @foods = sort {
-        $a->findvalue ('calories') <=>
-        $b->findvalue ('calories')
-    } @foods;
+    @foods = sort { $a->findvalue ('calories') <=> $b->findvalue ('calories') }
+             @foods;
 
     print $_->findvalue ('name'), "\n\t", $_->findvalue ('description'), "\n"
         foreach @foods;
