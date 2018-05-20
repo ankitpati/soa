@@ -45,6 +45,33 @@ get '/student' => sub {
     }
 };
 
+put '/student' => sub {
+    my $c = shift;
+
+    my $s = Student->insert ({
+        prn    => $c->param ('prn'),
+        fname  => $c->param ('fname'),
+        lname  => $c->param ('lname'),
+        dob    => $c->param ('dob'),
+        branch => $c->param ('branch'),
+    });
+
+    if ($s) {
+        $c->render (
+            text => encode_json ({
+                status => 'Success.',
+            }) . "\n",
+        );
+    }
+    else {
+        $c->render (
+            text => encode_json ({
+                status => 'Unable to insert given data.',
+            }) . "\n",
+        );
+    }
+};
+
 app->start;
 
 __END__
