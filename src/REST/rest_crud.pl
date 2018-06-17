@@ -113,7 +113,7 @@ post '/student' => sub {
     my $params = $c->req->params->to_hash;
     my @got_fields = keys %$params;
 
-    unless (is_subset \@got_fields, \@fields) {
+    unless (@got_fields && is_subset \@got_fields, \@fields) {
         $c->render (
             text => encode_json ({ status => "@fields accepted." }) . "\n",
         );
