@@ -54,6 +54,28 @@ get '/student' => sub {
     }
 };
 
+del '/student' => sub {
+    my $c = shift;
+
+    my $s = Student->retrieve ( $c->param ($pkey) );
+
+    if ($s) {
+        $c->render (
+            text => encode_json ({
+                status => $s->delete == 1 ? 'Success.'
+                                          : 'Unable to delete given record.',
+            }) . "\n",
+        );
+    }
+    else {
+        $c->render (
+            text => encode_json ({
+                status => 'Given record does not exist.',
+            }) . "\n",
+        );
+    }
+};
+
 put '/student' => sub {
     my $c = shift;
 
@@ -114,6 +136,7 @@ post '/student' => sub {
         }) . "\n",
     );
 };
+
 
 app->start;
 
