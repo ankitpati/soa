@@ -19,6 +19,7 @@ sub is_subset { my %h; undef @h{@{$_[0]}}; delete @h{@{$_[1]}}; !keys %h }
 # helper subroutines
 
 my @fields = map { $_->name } Student->columns;
+my $pkey = Student->primary_column->name;
 
 any '/' => {
     text => <<'EOT',
@@ -37,18 +38,12 @@ EOT
 get '/student' => sub {
     my $c = shift;
 
-    my $s = Student->retrieve ( $c->param ('prn') );
+    my $s = Student->retrieve ( $c->param ($pkey) );
 
     if ($s) {
-        $c->render (
-            text => encode_json ({
-                prn    => $s->prn,
-                fname  => $s->fname,
-                lname  => $s->lname,
-                dob    => $s->dob,
-                branch => $s->branch,
-            }) . "\n",
-        );
+        my $response;
+        $response->{$_} = $s->$_ foreach @fields;
+        $c->render (text => encode_json ($response) . "\n");
     }
     else {
         $c->render (
@@ -70,9 +65,7 @@ put '/student' => sub {
         is_subset (\@got_fields, \@fields)
     ) {
         $c->render (
-            text => encode_json ({
-                status => 'prn, fname, lname, dob, branch required.',
-            }) . "\n",
+            text => encode_json ({ status => "@fields required.", }) . "\n",
         );
         return;
     }
@@ -95,13 +88,13 @@ post '/student' => sub {
     unless (is_subset \@got_fields, \@fields) {
         $c->render (
             text => encode_json ({
-                status => 'prn, fname, lname, dob, branch accepted.',
+                status => "@fields accepted.",
             }) . "\n",
         );
         return;
     }
 
-    my $s = Student->retrieve ($params->{prn});
+    my $s = Student->retrieve ($params->{$pkey});
 
     unless ($s) {
         $c->render (
