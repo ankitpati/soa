@@ -11,7 +11,11 @@ use lib dirname $0;
 use Student;
 
 # helper subroutines
+
 sub is_subset { my %h; undef @h{@{$_[0]}}; delete @h{@{$_[1]}}; !keys %h }
+                # param 1: ARRAYref of subset
+                # param 2: ARRAYref of superset
+
 # helper subroutines
 
 my @fields = map { $_->name } Student->columns;
@@ -78,6 +82,42 @@ put '/student' => sub {
     $c->render (
         text => encode_json ({
             status => $s ? 'Success.' : 'Unable to insert given data.',
+        }) . "\n",
+    );
+};
+
+post '/student' => sub {
+    my $c = shift;
+
+    my $params = $c->req->params->to_hash;
+    my @got_fields = keys %$params;
+
+    unless (is_subset \@got_fields, \@fields) {
+        $c->render (
+            text => encode_json ({
+                status => 'prn, fname, lname, dob, branch accepted.',
+            }) . "\n",
+        );
+        return;
+    }
+
+    my $s = Student->retrieve ($params->{prn});
+
+    unless ($s) {
+        $c->render (
+            text => encode_json ({
+                status => 'Unable to retrive required record.',
+            }) . "\n",
+        );
+        return;
+    }
+
+    $s->$_ ($params->{$_}) foreach @got_fields;
+
+    $c->render (
+        text => encode_json ({
+            status =>
+                $s->update == 1 ? 'Success.' : 'Unable to update given record.',
         }) . "\n",
     );
 };
