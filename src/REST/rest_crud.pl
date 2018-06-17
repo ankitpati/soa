@@ -43,9 +43,7 @@ get '/student' => sub {
 
     unless (@got_fields && is_subset \@got_fields, \@fields) {
         $c->render (
-            text => encode_json ({
-                status => "@fields accepted.",
-            }) . "\n",
+            text => encode_json ({ status => "@fields accepted." }) . "\n",
         );
         return;
     }
@@ -67,21 +65,21 @@ del '/student' => sub {
 
     my $s = Student->retrieve ( $c->param ($pkey) );
 
-    if ($s) {
-        $c->render (
-            text => encode_json ({
-                status => $s->delete == 1 ? 'Success.'
-                                          : 'Unable to delete given record.',
-            }) . "\n",
-        );
-    }
-    else {
+    unless ($s) {
         $c->render (
             text => encode_json ({
                 status => 'Given record does not exist.',
             }) . "\n",
         );
+        return;
     }
+
+    $c->render (
+        text => encode_json ({
+            status =>
+                $s->delete == 1 ? 'Success.' : 'Unable to delete given record.',
+        }) . "\n",
+    );
 };
 
 put '/student' => sub {
@@ -95,7 +93,7 @@ put '/student' => sub {
         is_subset (\@got_fields, \@fields)
     ) {
         $c->render (
-            text => encode_json ({ status => "@fields required.", }) . "\n",
+            text => encode_json ({ status => "@fields required." }) . "\n",
         );
         return;
     }
@@ -117,9 +115,7 @@ post '/student' => sub {
 
     unless (is_subset \@got_fields, \@fields) {
         $c->render (
-            text => encode_json ({
-                status => "@fields accepted.",
-            }) . "\n",
+            text => encode_json ({ status => "@fields accepted." }) . "\n",
         );
         return;
     }
