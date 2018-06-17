@@ -38,20 +38,28 @@ EOT
 get '/student' => sub {
     my $c = shift;
 
-    my $s = Student->retrieve ( $c->param ($pkey) );
+    my $params = $c->req->params->to_hash;
+    my @got_fields = keys %$params;
 
-    if ($s) {
-        my $response;
-        $response->{$_} = $s->$_ foreach @fields;
-        $c->render (text => encode_json ($response) . "\n");
-    }
-    else {
+    unless (@got_fields && is_subset \@got_fields, \@fields) {
         $c->render (
             text => encode_json ({
-                status => 'Given record does not exist.',
+                status => "@fields accepted.",
             }) . "\n",
         );
+        return;
     }
+
+    my @students = Student->search ( %$params );
+
+    my @response;
+    foreach my $s (@students) {
+        my $record;
+        $record->{$_} = $s->$_ foreach @fields;
+        push @response, $record;
+    }
+
+    $c->render (text => encode_json (\@response) . "\n");
 };
 
 del '/student' => sub {
