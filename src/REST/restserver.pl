@@ -7,6 +7,8 @@ use Mojolicious::Lite;
 
 any '/' => {
     text => <<'EOT',
+<pre>
+
 GET and POST requests accepted at the following end-points:
  1. /add
     Parameters:
@@ -20,6 +22,8 @@ GET and POST requests accepted at the following end-points:
  3. /factors
         unsigned num;
     Eg. /factors?num=1849
+
+</pre>
 EOT
 };
 

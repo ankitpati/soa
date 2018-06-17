@@ -12,11 +12,15 @@ use Student;
 
 any '/' => {
     text => <<'EOT',
+<pre>
+
 PUT     GET     POST    DELETE
 create  read    update  delete
 
 Above requests accepted on following endpoint(s):
  1. /student
+
+</pre>
 EOT
 };
 
