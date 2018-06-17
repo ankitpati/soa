@@ -48,7 +48,7 @@ get '/student' => sub {
     else {
         $c->render (
             text => encode_json ({
-                status => 'Unable to fetch data for given PRN.',
+                status => 'Given record does not exist.',
             }) . "\n",
         );
     }
