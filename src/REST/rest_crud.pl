@@ -10,6 +10,10 @@ use File::Basename qw(dirname);
 use lib dirname $0;
 use Student;
 
+# helper subroutines
+sub is_subset { my %h; undef @h{@{$_[0]}}; delete @h{@{$_[1]}}; !keys %h }
+# helper subroutines
+
 any '/' => {
     text => <<'EOT',
 <pre>
@@ -52,28 +56,29 @@ get '/student' => sub {
 put '/student' => sub {
     my $c = shift;
 
-    my $s = Student->insert ({
-        prn    => $c->param ('prn'),
-        fname  => $c->param ('fname'),
-        lname  => $c->param ('lname'),
-        dob    => $c->param ('dob'),
-        branch => $c->param ('branch'),
-    });
+    my @expected_fields = qw( prn fname lname dob branch );
+    my $params = $c->req->params->to_hash;
+    my @got_fields = keys %$params;
 
-    if ($s) {
+    unless (
+        is_subset (\@expected_fields, \@got_fields) &&
+        is_subset (\@got_fields, \@expected_fields)
+    ) {
         $c->render (
             text => encode_json ({
-                status => 'Success.',
+                status => 'prn, fname, lname, dob, branch required.',
             }) . "\n",
         );
+        return;
     }
-    else {
-        $c->render (
-            text => encode_json ({
-                status => 'Unable to insert given data.',
-            }) . "\n",
-        );
-    }
+
+    my $s = Student->insert ($params);
+
+    $c->render (
+        text => encode_json ({
+            status => $s ? 'Success.' : 'Unable to insert given data.',
+        }) . "\n",
+    );
 };
 
 app->start;
