@@ -14,6 +14,8 @@ use Student;
 sub is_subset { my %h; undef @h{@{$_[0]}}; delete @h{@{$_[1]}}; !keys %h }
 # helper subroutines
 
+my @fields = map { $_->name } Student->columns;
+
 any '/' => {
     text => <<'EOT',
 <pre>
@@ -56,13 +58,12 @@ get '/student' => sub {
 put '/student' => sub {
     my $c = shift;
 
-    my @expected_fields = qw( prn fname lname dob branch );
     my $params = $c->req->params->to_hash;
     my @got_fields = keys %$params;
 
     unless (
-        is_subset (\@expected_fields, \@got_fields) &&
-        is_subset (\@got_fields, \@expected_fields)
+        is_subset (\@fields, \@got_fields) &&
+        is_subset (\@got_fields, \@fields)
     ) {
         $c->render (
             text => encode_json ({
